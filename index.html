@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MVP de Mobilidade 24h — Apresentação Executiva</title>
+  <title>MVP Mobilidade Vix — Cliente | Motorista | Painel</title>
   <style>
     :root {
       --bg: #eef3f9;
@@ -28,6 +28,37 @@
     html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: Inter, Arial, Helvetica, sans-serif; }
     body { line-height: 1.45; }
     .wrap { width: min(var(--page-w), calc(100% - 40px)); margin: 28px auto 60px; }
+
+    /* NAVEGAÇÃO */
+    .nav-top {
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      margin-bottom: 22px;
+      padding: 16px 28px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-btn {
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      color: var(--text);
+      border-radius: 16px;
+      padding: 12px 24px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #f1f5f9; }
+    .nav-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
 
     .hero, .section, .footer-box {
       background: var(--card);
@@ -280,8 +311,15 @@
       border: 1px solid #dbe2ea;
       background: #f9fafb;
       color: #111827;
+      cursor: pointer;
+      transition: all 0.2s;
     }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .btn.primary { background: #111827; color: white; border-color: #111827; }
+    .btn.primary:hover { background: #1f2937; }
+    .btn.success { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn.success:hover { background: var(--accent-2); }
+    .btn.danger { background: var(--danger); color: white; border-color: var(--danger); }
     .mini-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
     .driver-preview {
       margin-top: 12px;
@@ -336,10 +374,173 @@
     .small { font-size: 13px; }
     .print-note { margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.78); }
 
+    /* ===== PÁGINA DO CLIENTE ===== */
+    .client-form {
+      display: grid;
+      gap: 16px;
+      max-width: 600px;
+    }
+    .form-group {
+      display: grid;
+      gap: 6px;
+    }
+    .form-group label {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      font-size: 15px;
+      font-family: inherit;
+      background: white;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.1);
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .tipo-viagem {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tipo-card {
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tipo-card:hover { border-color: var(--accent); }
+    .tipo-card.selected {
+      border-color: var(--accent);
+      background: #ecfdf3;
+    }
+    .tipo-card .icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    /* ===== PÁGINA DO MOTORISTA ===== */
+    .corridas-lista {
+      display: grid;
+      gap: 16px;
+    }
+    .corrida-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      background: white;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .corrida-info h4 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+    .corrida-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .corrida-valor {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--accent-2);
+    }
+    .corrida-acoes {
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .status-pendente { background: #fef3c7; color: #92400e; }
+    .status-andamento { background: #dbeafe; color: #1e40af; }
+    .status-concluida { background: #d1fae5; color: #065f46; }
+
+    /* ===== PAINEL ADMIN ===== */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--accent-2);
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .pedidos-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+    .pedidos-table th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .pedidos-table td {
+      background: white;
+      border: 1px solid var(--line);
+      padding: 16px;
+      font-size: 14px;
+    }
+    .pedidos-table td:first-child {
+      border-radius: 16px 0 0 16px;
+      border-right: none;
+    }
+    .pedidos-table td:last-child {
+      border-radius: 0 16px 16px 0;
+      border-left: none;
+    }
+    .pedidos-table tr:hover td {
+      background: #f8fafc;
+    }
+
     @page { size: A4; margin: 12mm; }
     @media print {
       html, body { background: white; }
       .wrap { width: 100%; margin: 0; }
+      .nav-top { display: none; }
       .hero, .section, .footer-box, .card, .step, .timeline-item, .box, .highlight, .rep-card { box-shadow: none !important; }
       .hero, .section, .footer-box { margin-bottom: 12px; }
       .hero { padding: 26px; }
@@ -350,259 +551,269 @@
       .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .phone { min-height: 560px; }
       .section, .card, .step, .timeline-item, .compare, .grid-2, .grid-3, .grid-4, .hero-grid, .reputation-cards { page-break-inside: avoid; break-inside: avoid; }
+      .page-section { display: block !important; }
     }
 
     @media (max-width: 980px) {
-      .hero-grid, .grid-2, .grid-3, .grid-4, .compare, .flow, .reputation-cards { grid-template-columns: 1fr; }
+      .hero-grid, .grid-2, .grid-3, .grid-4, .compare, .flow, .reputation-cards, .stats-row, .form-row, .tipo-viagem { grid-template-columns: 1fr; }
       .kpis { grid-template-columns: 1fr; }
       h1 { font-size: 34px; }
+      .corrida-card { grid-template-columns: 1fr; }
+      .pedidos-table { font-size: 12px; }
+      .pedidos-table td { padding: 10px; }
     }
   </style>
+<base target="_blank">
 </head>
 <body>
   <div class="wrap">
-    <section class="hero">
-      <div class="badge">Apresentação executiva • MVP de mobilidade 24h</div>
-      <h1>MVP enxuto, com mapa e agendamento, pensado para operar 24 horas sem depender de operador o tempo todo</h1>
-      <p class="sub">Proposta de funcionamento do produto para validar o negócio rápido, com investimento controlado, experiência profissional para o cliente e automação suficiente para sustentar a operação desde o início.</p>
+    
+    <!-- NAVEGAÇÃO -->
+    <div class="nav-top">
+      <button class="nav-btn active" onclick="showPage('apresentacao')">📋 Apresentação</button>
+      <button class="nav-btn" onclick="showPage('cliente')">👤 Cliente</button>
+      <button class="nav-btn" onclick="showPage('motorista')">🚗 Motorista</button>
+      <button class="nav-btn" onclick="showPage('painel')">📊 Painel</button>
+    </div>
 
-      <div class="hero-grid">
-        <div>
-          <div class="kpis">
-            <div class="kpi">
-              <strong>Mapa</strong>
-              <span>Cliente visualiza origem, destino e status da solicitação</span>
+    <!-- PÁGINA 1: APRESENTAÇÃO (ORIGINAL) -->
+    <div id="apresentacao" class="page-section active">
+      
+      <section class="hero">
+        <div class="badge">Apresentação executiva • MVP de mobilidade 24h</div>
+        <h1>MVP enxuto, com mapa e agendamento, pensado para operar 24 horas sem depender de operador o tempo todo</h1>
+        <p class="sub">Proposta de funcionamento do produto para validar o negócio rápido, com investimento controlado, experiência profissional para o cliente e automação suficiente para sustentar a operação desde o início.</p>
+
+        <div class="hero-grid">
+          <div>
+            <div class="kpis">
+              <div class="kpi">
+                <strong>Mapa</strong>
+                <span>Cliente visualiza origem, destino e status da solicitação</span>
+              </div>
+              <div class="kpi">
+                <strong>Agendamento</strong>
+                <span>Corridas e serviços podem ser marcados com antecedência</span>
+              </div>
+              <div class="kpi">
+                <strong>24h</strong>
+                <span>Fluxo automático reduz necessidade de operação humana contínua</span>
+              </div>
             </div>
-            <div class="kpi">
-              <strong>Agendamento</strong>
-              <span>Corridas e serviços podem ser marcados com antecedência</span>
-            </div>
-            <div class="kpi">
-              <strong>24h</strong>
-              <span>Fluxo automático reduz necessidade de operação humana contínua</span>
-            </div>
+            <p class="print-note">Documento preparado em HTML com blocos organizados para exportação em PDF sem cortar conteúdo no meio das páginas.</p>
           </div>
-          <p class="print-note">Documento preparado em HTML com blocos organizados para exportação em PDF sem cortar conteúdo no meio das páginas.</p>
-        </div>
 
-        <div class="hero-card">
-          <svg viewBox="0 0 520 300" width="100%" role="img" aria-label="Ilustração do fluxo do MVP de mobilidade">
-            <defs>
-              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-                <stop offset="100%" stop-color="#c7d2fe" stop-opacity="0.55"/>
-              </linearGradient>
-            </defs>
-            <rect x="18" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
-            <rect x="202" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
-            <rect x="384" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
-            <rect x="110" y="188" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
-            <rect x="292" y="188" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
-            <path d="M138 72 H202" stroke="white" stroke-width="4" stroke-linecap="round"/>
-            <path d="M322 72 H384" stroke="white" stroke-width="4" stroke-linecap="round"/>
-            <path d="M260 110 V186" stroke="white" stroke-width="4" stroke-linecap="round"/>
-            <path d="M230 226 H292" stroke="white" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="260" cy="150" r="18" fill="#22c55e" opacity="0.95"/>
-            <text x="78" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Cliente</text>
-            <text x="78" y="90" fill="#334155" font-size="12" text-anchor="middle">Pede ou agenda</text>
-            <text x="262" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Sistema</text>
-            <text x="262" y="90" fill="#334155" font-size="12" text-anchor="middle">Distribui automaticamente</text>
-            <text x="444" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Motorista</text>
-            <text x="444" y="90" fill="#334155" font-size="12" text-anchor="middle">Aceita no celular</text>
-            <text x="170" y="219" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Mapa</text>
-            <text x="170" y="244" fill="#334155" font-size="12" text-anchor="middle">Rota e status visíveis</text>
-            <text x="352" y="219" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Fallback</text>
-            <text x="352" y="244" fill="#334155" font-size="12" text-anchor="middle">Reenvio e contingência</text>
-          </svg>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Visão de negócio</div>
-        <h2>O problema que este MVP resolve</h2>
-        <p class="muted">A empresa já possui carteira de clientes. O objetivo não é começar com um "novo Uber completo", mas colocar rapidamente no ar um sistema confiável que organize pedidos, exiba mapa, permita agendamento e opere 24h com o máximo possível de automação.</p>
-      </div>
-
-      <div class="compare">
-        <div class="box bad">
-          <h3>Modelo ruim para começar</h3>
-          <ul class="clean">
-            <li>Desenvolver um app completo e caro antes de validar operação real.</li>
-            <li>Depender de operador humano 24h para confirmar cada chamado.</li>
-            <li>Gastar cedo com recursos sofisticados que o cliente ainda nem usa.</li>
-            <li>Assumir complexidade alta quando o foco inicial é rodar e faturar.</li>
-          </ul>
-        </div>
-        <div class="box good">
-          <h3>Modelo certo para começar</h3>
-          <ul class="clean">
-            <li>Lançar um MVP enxuto com experiência profissional.</li>
-            <li>Automatizar pedido, agendamento, distribuição e atualização de status.</li>
-            <li>Dar visibilidade ao cliente e controle ao negócio.</li>
-            <li>Validar tração, uso e operação antes de evoluir para algo maior.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Conceito do produto</div>
-        <h2>O que o cliente e o sócio verão como funcionamento</h2>
-        <p class="muted">A experiência precisa ser simples para quem usa e eficiente para quem opera. O empresário precisa enxergar clareza, velocidade, previsibilidade e capacidade de atendimento contínuo.</p>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <div class="pill">1 • Pedido imediato</div>
-          <p>O cliente abre a plataforma, informa origem e destino no mapa e solicita atendimento imediato.</p>
-          <div class="tag-row">
-            <span class="tag">Mapa visível</span>
-            <span class="tag">Confirmação rápida</span>
-            <span class="tag">Fluxo simples</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="pill">2 • Agendamento</div>
-          <p>O cliente escolhe dia e horário e deixa a solicitação programada. O sistema organiza a corrida com antecedência.</p>
-          <div class="tag-row">
-            <span class="tag">Reserva antecipada</span>
-            <span class="tag">Menos atrito</span>
-            <span class="tag">Mais previsibilidade</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="pill">3 • Operação 24h</div>
-          <p>O sistema distribui automaticamente para motoristas disponíveis e reduz dependência de confirmação humana contínua.</p>
-          <div class="tag-row">
-            <span class="tag">Automação</span>
-            <span class="tag">Disponibilidade</span>
-            <span class="tag">Fallback</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Demonstração visual</div>
-        <h2>Exemplo da tela do cliente no celular com mapa de aparência profissional</h2>
-        <p class="muted">A proposta é ter uma interface simples, clara e confiável, com um mapa que já pareça produto real na apresentação. O cliente entende em poucos segundos como solicitar ou agendar.</p>
-      </div>
-
-      <div class="grid-2">
-        <div class="phone">
-          <div class="phone-top">
-            <div class="statusbar">
-              <span>09:41</span>
-              <span>5G • 82%</span>
-            </div>
-            <div class="top-actions">
-              <div class="icon-btn">←</div>
-              <div style="font-size:13px; opacity:0.85;">Mobilidade • MVP premium</div>
-              <div class="icon-btn">☰</div>
-            </div>
-            <strong style="font-size:22px; display:block; margin-bottom:4px;">Para onde vamos?</strong>
-            <span style="font-size:13px; opacity:0.82;">Visual próximo de app real para apresentação executiva</span>
-          </div>
-          <div class="map-box" style="background:#0f172a; position:relative;">
-            <iframe 
-              width="100%" 
-              height="100%" 
-              frameborder="0" 
-              scrolling="no" 
-              marginheight="0" 
-              marginwidth="0" 
-              src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3004.5!2d-40.287!3d-20.285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x0%3A0x0!2sShopping+Vit%C3%B3ria%2C+Av.+Am%C3%A9rico+Buaiz%2C+200+-+Enseada+do+Su%C3%A1%2C+Vit%C3%B3ria+-+ES!3m2!1d-20.312346!2d-40.28805!4m5!1s0x0%3A0x0!2sAeroporto+Internacional+de+Vit%C3%B3ria+-+Eurico+de+Aguiar+Salles%2C+Av.+Fernando+Ferrari%2C+3800+-+Goiabeiras%2C+Vit%C3%B3ria+-+ES!3m2!1d-20.258057!2d-40.286388!5e0!3m2!1spt-BR!2sbr!4v1234567890" 
-              style="filter: grayscale(20%) contrast(1.1) brightness(0.9);"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-            <!-- Marcador Shopping Vitória (Origem) -->
-            <div style="position:absolute; top:65%; left:30%; transform:translate(-50%,-50%); z-index:10;">
-              <div style="width:28px; height:28px; background:#22c55e; border-radius:50%; border:3px solid white; box-shadow:0 4px 15px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:white;">A</div>
-              <div style="position:absolute; top:-6px; left:-6px; width:40px; height:40px; background:#22c55e; border-radius:50%; opacity:0.25; animation:pulse 2s infinite;"></div>
-              <div style="position:absolute; top:30px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:4px 8px; border-radius:6px; font-size:11px; white-space:nowrap; font-weight:600;">Shopping Vitória</div>
-            </div>
-            <!-- Marcador Aeroporto (Destino) -->
-            <div style="position:absolute; top:25%; left:70%; transform:translate(-50%,-50%); z-index:10;">
-              <div style="width:28px; height:28px; background:#ef4444; border-radius:50%; border:3px solid white; box-shadow:0 4px 15px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:white;">B</div>
-              <div style="position:absolute; top:-6px; left:-6px; width:40px; height:40px; background:#ef4444; border-radius:50%; opacity:0.25; animation:pulse 2s infinite;"></div>
-              <div style="position:absolute; top:-35px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:4px 8px; border-radius:6px; font-size:11px; white-space:nowrap; font-weight:600;">Aeroporto VIX</div>
-            </div>
-            <!-- Linha de trajeto estilo Waze -->
-            <svg style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; pointer-events:none;" viewBox="0 0 360 285" preserveAspectRatio="none">
+          <div class="hero-card">
+            <svg viewBox="0 0 520 300" width="100%" role="img" aria-label="Ilustração do fluxo do MVP de mobilidade">
               <defs>
-                <linearGradient id="routeGradVix" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
-                  <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+                  <stop offset="100%" stop-color="#c7d2fe" stop-opacity="0.55"/>
                 </linearGradient>
-                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
               </defs>
-              <!-- Trajeto aproximado Shopping → Aeroporto -->
-              <path d="M108 185 Q 140 160, 180 140 T 252 71" 
-                    stroke="url(#routeGradVix)" 
-                    stroke-width="8" 
-                    fill="none" 
-                    stroke-linecap="round"
-                    filter="url(#glow)"
-                    opacity="0.9"/>
-              <path d="M108 185 Q 140 160, 180 140 T 252 71" 
-                    stroke="white" 
-                    stroke-width="3" 
-                    fill="none" 
-                    stroke-linecap="round"
-                    stroke-dasharray="6,10"
-                    opacity="0.95"/>
-              <!-- Seta indicando direção -->
-              <polygon points="252,71 245,75 245,67" fill="#ef4444" opacity="0.9"/>
+              <rect x="18" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
+              <rect x="202" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
+              <rect x="384" y="34" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
+              <rect x="110" y="188" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
+              <rect x="292" y="188" rx="22" ry="22" width="120" height="76" fill="url(#g1)" />
+              <path d="M138 72 H202" stroke="white" stroke-width="4" stroke-linecap="round"/>
+              <path d="M322 72 H384" stroke="white" stroke-width="4" stroke-linecap="round"/>
+              <path d="M260 110 V186" stroke="white" stroke-width="4" stroke-linecap="round"/>
+              <path d="M230 226 H292" stroke="white" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="260" cy="150" r="18" fill="#22c55e" opacity="0.95"/>
+              <text x="78" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Cliente</text>
+              <text x="78" y="90" fill="#334155" font-size="12" text-anchor="middle">Pede ou agenda</text>
+              <text x="262" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Sistema</text>
+              <text x="262" y="90" fill="#334155" font-size="12" text-anchor="middle">Distribui automaticamente</text>
+              <text x="444" y="65" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Motorista</text>
+              <text x="444" y="90" fill="#334155" font-size="12" text-anchor="middle">Aceita no celular</text>
+              <text x="170" y="219" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Mapa</text>
+              <text x="170" y="244" fill="#334155" font-size="12" text-anchor="middle">Rota e status visíveis</text>
+              <text x="352" y="219" fill="#0f172a" font-size="18" font-weight="700" text-anchor="middle">Fallback</text>
+              <text x="352" y="244" fill="#334155" font-size="12" text-anchor="middle">Reenvio e contingência</text>
             </svg>
-            <!-- Badge de tempo estimado -->
-            <div style="position:absolute; top:10px; right:10px; background:rgba(17,24,39,0.95); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:8px 12px; z-index:15; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-              <div style="color:#22c55e; font-size:16px; font-weight:800;">12 min</div>
-              <div style="color:#9ca3af; font-size:10px;">Shopping → Aeroporto</div>
-            </div>
-            <!-- Estilo da animação pulse -->
-            <style>
-              @keyframes pulse {
-                0% { transform: scale(1); opacity: 0.25; }
-                50% { transform: scale(1.6); opacity: 0.1; }
-                100% { transform: scale(1); opacity: 0.25; }
-              }
-            </style>
           </div>
-          <div class="screen">
-            <div class="search-pill">🔍 Embarque e destino em poucos toques</div>
-            <div class="ride-card">
-              <div class="field"><span class="route-dot" style="background:#22c55e;"></span><strong>Origem</strong><br><span class="muted">Av. central selecionada no mapa</span></div>
-              <div class="field"><span class="route-dot" style="background:#ef4444;"></span><strong>Destino</strong><br><span class="muted">Hotel / clínica / aeroporto / endereço final</span></div>
-              <div class="mini-row">
-                <div class="field" style="margin-bottom:0;"><strong>Quando?</strong><br><span class="muted">Agora ou agendar</span></div>
-                <div style="background:#f3f4f6; border:1px solid #e5e7eb; border-radius:16px; padding:12px 14px; font-weight:800;">7 min</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Visão de negócio</div>
+          <h2>O problema que este MVP resolve</h2>
+          <p class="muted">A empresa já possui carteira de clientes. O objetivo não é começar com um "novo Uber completo", mas colocar rapidamente no ar um sistema confiável que organize pedidos, exiba mapa, permita agendamento e opere 24h com o máximo possível de automação.</p>
+        </div>
+
+        <div class="compare">
+          <div class="box bad">
+            <h3>Modelo ruim para começar</h3>
+            <ul class="clean">
+              <li>Desenvolver um app completo e caro antes de validar operação real.</li>
+              <li>Depender de operador humano 24h para confirmar cada chamado.</li>
+              <li>Gastar cedo com recursos sofisticados que o cliente ainda nem usa.</li>
+              <li>Assumir complexidade alta quando o foco inicial é rodar e faturar.</li>
+            </ul>
+          </div>
+          <div class="box good">
+            <h3>Modelo certo para começar</h3>
+            <ul class="clean">
+              <li>Lançar um MVP enxuto com experiência profissional.</li>
+              <li>Automatizar pedido, agendamento, distribuição e atualização de status.</li>
+              <li>Dar visibilidade ao cliente e controle ao negócio.</li>
+              <li>Validar tração, uso e operação antes de evoluir para algo maior.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Conceito do produto</div>
+          <h2>O que o cliente e o sócio verão como funcionamento</h2>
+          <p class="muted">A experiência precisa ser simples para quem usa e eficiente para quem opera. O empresário precisa enxergar clareza, velocidade, previsibilidade e capacidade de atendimento contínuo.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="pill">1 • Pedido imediato</div>
+            <p>O cliente abre a plataforma, informa origem e destino no mapa e solicita atendimento imediato.</p>
+            <div class="tag-row">
+              <span class="tag">Mapa visível</span>
+              <span class="tag">Confirmação rápida</span>
+              <span class="tag">Fluxo simples</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="pill">2 • Agendamento</div>
+            <p>O cliente escolhe dia e horário e deixa a solicitação programada. O sistema organiza a corrida com antecedência.</p>
+            <div class="tag-row">
+              <span class="tag">Reserva antecipada</span>
+              <span class="tag">Menos atrito</span>
+              <span class="tag">Mais previsibilidade</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="pill">3 • Operação 24h</div>
+            <p>O sistema distribui automaticamente para motoristas disponíveis e reduz dependência de confirmação humana contínua.</p>
+            <div class="tag-row">
+              <span class="tag">Automação</span>
+              <span class="tag">Disponibilidade</span>
+              <span class="tag">Fallback</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Demonstração visual</div>
+          <h2>Exemplo da tela do cliente no celular com mapa de aparência profissional</h2>
+          <p class="muted">A proposta é ter uma interface simples, clara e confiável, com um mapa que já pareça produto real na apresentação. O cliente entende em poucos segundos como solicitar ou agendar.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="phone">
+            <div class="phone-top">
+              <div class="statusbar">
+                <span>09:41</span>
+                <span>5G • 82%</span>
               </div>
-              <div class="cta-row">
-                <div class="btn">Agendar</div>
-                <div class="btn primary">Confirmar</div>
+              <div class="top-actions">
+                <div class="icon-btn">←</div>
+                <div style="font-size:13px; opacity:0.85;">Mobilidade • MVP premium</div>
+                <div class="icon-btn">☰</div>
               </div>
-              <div class="driver-preview">
-                <div class="avatar"></div>
-                <div>
-                  <strong>Motorista mais próximo</strong><br>
-                  <span class="stars">★ 4,9 • 1.248 viagens</span>
+              <strong style="font-size:22px; display:block; margin-bottom:4px;">Para onde vamos?</strong>
+              <span style="font-size:13px; opacity:0.82;">Visual próximo de app real para apresentação executiva</span>
+            </div>
+            <div class="map-box" style="background:#0f172a; position:relative;">
+              <iframe 
+                width="100%" 
+                height="100%" 
+                frameborder="0" 
+                scrolling="no" 
+                marginheight="0" 
+                marginwidth="0" 
+                src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3004.5!2d-40.287!3d-20.285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e0!4m5!1s0x0%3A0x0!2sShopping+Vit%C3%B3ria%2C+Av.+Am%C3%A9rico+Buaiz%2C+200+-+Enseada+do+Su%C3%A1%2C+Vit%C3%B3ria+-+ES!3m2!1d-20.312346!2d-40.28805!4m5!1s0x0%3A0x0!2sAeroporto+Internacional+de+Vit%C3%B3ria+-+Eurico+de+Aguiar+Salles%2C+Av.+Fernando+Ferrari%2C+3800+-+Goiabeiras%2C+Vit%C3%B3ria+-+ES!3m2!1d-20.258057!2d-40.286388!5e0!3m2!1spt-BR!2sbr!4v1234567890" 
+                style="filter: grayscale(20%) contrast(1.1) brightness(0.9);"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+              <div style="position:absolute; top:65%; left:30%; transform:translate(-50%,-50%); z-index:10;">
+                <div style="width:28px; height:28px; background:#22c55e; border-radius:50%; border:3px solid white; box-shadow:0 4px 15px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:white;">A</div>
+                <div style="position:absolute; top:-6px; left:-6px; width:40px; height:40px; background:#22c55e; border-radius:50%; opacity:0.25; animation:pulse 2s infinite;"></div>
+                <div style="position:absolute; top:30px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:4px 8px; border-radius:6px; font-size:11px; white-space:nowrap; font-weight:600;">Shopping Vitória</div>
+              </div>
+              <div style="position:absolute; top:25%; left:70%; transform:translate(-50%,-50%); z-index:10;">
+                <div style="width:28px; height:28px; background:#ef4444; border-radius:50%; border:3px solid white; box-shadow:0 4px 15px rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; color:white;">B</div>
+                <div style="position:absolute; top:-6px; left:-6px; width:40px; height:40px; background:#ef4444; border-radius:50%; opacity:0.25; animation:pulse 2s infinite;"></div>
+                <div style="position:absolute; top:-35px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:4px 8px; border-radius:6px; font-size:11px; white-space:nowrap; font-weight:600;">Aeroporto VIX</div>
+              </div>
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:5; pointer-events:none;" viewBox="0 0 360 285" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="routeGradVix" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+                  </linearGradient>
+                  <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path d="M108 185 Q 140 160, 180 140 T 252 71" 
+                      stroke="url(#routeGradVix)" 
+                      stroke-width="8" 
+                      fill="none" 
+                      stroke-linecap="round"
+                      filter="url(#glow)"
+                      opacity="0.9"/>
+                <path d="M108 185 Q 140 160, 180 140 T 252 71" 
+                      stroke="white" 
+                      stroke-width="3" 
+                      fill="none" 
+                      stroke-linecap="round"
+                      stroke-dasharray="6,10"
+                      opacity="0.95"/>
+                <polygon points="252,71 245,75 245,67" fill="#ef4444" opacity="0.9"/>
+              </svg>
+              <div style="position:absolute; top:10px; right:10px; background:rgba(17,24,39,0.95); border:1px solid rgba(255,255,255,0.2); border-radius:12px; padding:8px 12px; z-index:15; box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+                <div style="color:#22c55e; font-size:16px; font-weight:800;">12 min</div>
+                <div style="color:#9ca3af; font-size:10px;">Shopping → Aeroporto</div>
+              </div>
+              <style>
+                @keyframes pulse {
+                  0% { transform: scale(1); opacity: 0.25; }
+                  50% { transform: scale(1.6); opacity: 0.1; }
+                  100% { transform: scale(1); opacity: 0.25; }
+                }
+              </style>
+            </div>
+            <div class="screen">
+              <div class="search-pill">🔍 Embarque e destino em poucos toques</div>
+              <div class="ride-card">
+                <div class="field"><span class="route-dot" style="background:#22c55e;"></span><strong>Origem</strong><br><span class="muted">Av. central selecionada no mapa</span></div>
+                <div class="field"><span class="route-dot" style="background:#ef4444;"></span><strong>Destino</strong><br><span class="muted">Hotel / clínica / aeroporto / endereço final</span></div>
+                <div class="mini-row">
+                  <div class="field" style="margin-bottom:0;"><strong>Quando?</strong><br><span class="muted">Agora ou agendar</span></div>
+                  <div style="background:#f3f4f6; border:1px solid #e5e7eb; border-radius:16px; padding:12px 14px; font-weight:800;">7 min</div>
                 </div>
-                <div style="font-weight:800; color:#111827;">2,3 km</div>
+                <div class="cta-row">
+                  <div class="btn">Agendar</div>
+                  <div class="btn primary">Confirmar</div>
+                </div>
+                <div class="driver-preview">
+                  <div class="avatar"></div>
+                  <div>
+                    <strong>Motorista mais próximo</strong><br>
+                    <span class="stars">★ 4,9 • 1.248 viagens</span>
+                  </div>
+                  <div style="font-weight:800; color:#111827;">2,3 km</div>
+                </div>
               </div>
             </div>
-          </div>
             <div class="field"><strong>Origem</strong><br><span class="muted">Rua de embarque selecionada no mapa</span></div>
             <div class="field"><strong>Destino</strong><br><span class="muted">Endereço final do trajeto</span></div>
             <div class="field"><strong>Quando?</strong><br><span class="muted">Agora ou agendar para data e hora específicas</span></div>
@@ -611,315 +822,850 @@
               <div class="btn primary">Pedir agora</div>
             </div>
           </div>
+
+          <div>
+            <div class="card" style="margin-bottom:16px;">
+              <h3>O que essa tela precisa transmitir</h3>
+              <ul class="clean">
+                <li>O cliente consegue se localizar e ver que o sistema realmente usa mapa.</li>
+                <li>O pedido pode ser imediato ou planejado para mais tarde.</li>
+                <li>O processo passa sensação de organização e segurança.</li>
+                <li>A plataforma reduz ligações, mensagens soltas e confusão operacional.</li>
+              </ul>
+            </div>
+            <div class="highlight">
+              <h3>Objetivo empresarial desta experiência</h3>
+              <p>Transformar um serviço que hoje pode depender de atendimento informal em um fluxo padronizado, registrável e escalável, sem precisar construir logo de cara uma operação gigante e cara.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Fluxo principal</div>
+          <h2>Como funciona o pedido imediato com lógica mais próxima do padrão Uber</h2>
+          <p class="muted">Este fluxo foi desenhado para reduzir fricção para o cliente, indicar o motorista mais próximo de forma inteligente e minimizar dependência de um operador humano permanente.</p>
+        </div>
+
+        <div class="flow">
+          <div class="step">
+            <div class="num">1</div>
+            <h3>Cliente solicita</h3>
+            <p>Origem, destino e tipo de atendimento são enviados pela plataforma.</p>
+          </div>
+          <div class="step">
+            <div class="num">2</div>
+            <h3>Sistema recebe</h3>
+            <p>O pedido entra automaticamente no fluxo e já fica pronto para distribuição.</p>
+          </div>
+          <div class="step">
+            <div class="num">3</div>
+            <h3>Motoristas são acionados</h3>
+            <p>Quem estiver disponível recebe o chamado no celular.</p>
+          </div>
+          <div class="step">
+            <div class="num">4</div>
+            <h3>Primeiro aceite confirma</h3>
+            <p>Assim que um motorista aceita, o sistema bloqueia a corrida para os demais.</p>
+          </div>
+          <div class="step">
+            <div class="num">5</div>
+            <h3>Status em tempo real</h3>
+            <p>Cliente acompanha andamento e o negócio mantém histórico organizado.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Agendamento</div>
+          <h2>Como funciona o agendamento, que é uma das peças mais valiosas do MVP</h2>
+          <p class="muted">Agendamento aumenta previsibilidade, reduz atrito operacional e fortalece recorrência com a base já existente de clientes.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <h3>1. Cliente escolhe o dia e o horário</h3>
+            <p>O pedido fica registrado com antecedência, sem depender de ligação, anotação manual ou confirmação por mensagem solta.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>2. A solicitação entra como reserva programada</h3>
+            <p>O sistema separa pedidos imediatos de pedidos futuros, mantendo organização e previsibilidade do volume esperado.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>3. Antes do horário, o sistema ativa o fluxo automático</h3>
+            <p>Com antecedência definida, o atendimento é disparado para motoristas aptos a aceitar o compromisso.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>4. O motorista confirma a reserva</h3>
+            <p>O cliente passa a ter um atendimento muito mais previsível e com menor risco de improviso de última hora.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>5. No horário, a corrida já entra pronta para execução</h3>
+            <p>Isso melhora experiência do cliente e reduz falhas em horários críticos, inclusive fora do expediente comercial.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Operação contínua</div>
+          <h2>Como o MVP pode funcionar 24 horas sem depender de operador fixo</h2>
+          <p class="muted">O ponto central desta proposta é: o sistema trabalha sozinho na maior parte do tempo. A equipe humana entra como exceção e não como regra.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3>Automação por padrão</h3>
+            <p>Pedidos entram, são distribuídos, recebem aceite e atualizam status sem exigir intervenção constante da equipe.</p>
+          </div>
+          <div class="card">
+            <h3>Fallback inteligente</h3>
+            <p>Se ninguém aceitar no primeiro disparo, o sistema reenvia, amplia alcance ou aciona uma contingência previamente definida.</p>
+          </div>
+          <div class="card">
+            <h3>Supervisão e não microgestão</h3>
+            <p>O empresário acompanha a operação em painel, mas não precisa viver apagando incêndio em cada solicitação.</p>
+          </div>
+        </div>
+
+        <div class="highlight" style="margin-top:16px;">
+          <h3>Mensagem importante para o sócio</h3>
+          <p>Não estamos propondo um modelo artesanal, dependente de alguém no telefone 24h. Estamos propondo um MVP com automação suficiente para rodar continuamente, preservando baixo custo e permitindo crescimento controlado.</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Reputação</div>
+          <h2>Reputação obrigatória no MVP: motorista e passageiro</h2>
+          <p class="muted">Como a operação será 24h e mais automática, a reputação não é luxo. Ela é peça de segurança e de qualidade da operação. O sistema passa a priorizar quem atende bem e protege os melhores usuários e motoristas.</p>
+        </div>
+
+        <div class="reputation-cards">
+          <div class="rep-card">
+            <div class="pill">Motorista</div>
+            <div class="score">4,9</div>
+            <p class="muted">A nota do motorista influencia prioridade de distribuição, confiança do passageiro e manutenção da qualidade da operação.</p>
+            <div class="meter"><span style="width:92%;"></span></div>
+            <ul class="clean">
+              <li>Nota média das viagens</li>
+              <li>Taxa de aceitação</li>
+              <li>Taxa de cancelamento</li>
+              <li>Histórico de corridas concluídas</li>
+            </ul>
+          </div>
+          <div class="rep-card">
+            <div class="pill">Passageiro</div>
+            <div class="score">4,8</div>
+            <p class="muted">A nota do passageiro ajuda a evitar no-show, cancelamentos abusivos e comportamento problemático, protegendo a rede de motoristas.</p>
+            <div class="meter"><span style="width:88%;"></span></div>
+            <ul class="clean">
+              <li>Nota recebida dos motoristas</li>
+              <li>Histórico de cancelamentos</li>
+              <li>Pontualidade e presença</li>
+              <li>Confiabilidade no uso da plataforma</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Motorista</div>
+          <h2>O que o motorista enxerga e por que isso importa</h2>
+          <p class="muted">O lado do motorista precisa ser muito direto: receber, entender, aceitar e executar. Quanto mais simples for, maior a chance de adesão operacional.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3>Fluxo do motorista</h3>
+            <ul class="clean">
+              <li>Recebe nova solicitação no celular.</li>
+              <li>Visualiza rapidamente origem, destino e horário.</li>
+              <li>Aceita o atendimento com um toque.</li>
+              <li>Atualiza status conforme avança.</li>
+              <li>Conclui a corrida com registro do atendimento.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Benefício empresarial</h3>
+            <ul class="clean">
+              <li>Menos ruído operacional.</li>
+              <li>Menos retrabalho da central.</li>
+              <li>Menos dependência de ligação e WhatsApp manual.</li>
+              <li>Mais padronização da operação.</li>
+              <li>Mais capacidade de atender maior volume no futuro.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Controle gerencial</div>
+          <h2>O que o empresário ganha no painel de gestão</h2>
+          <p class="muted">Sem entrar em infraestrutura técnica, o foco do painel é dar visibilidade e controle de operação.</p>
+        </div>
+
+        <div class="grid-4">
+          <div class="card">
+            <h3>Pedidos do momento</h3>
+            <p>Visualização do que está entrando agora e do que já está em atendimento.</p>
+          </div>
+          <div class="card">
+            <h3>Agendamentos futuros</h3>
+            <p>Visão antecipada da agenda do dia e dos próximos períodos.</p>
+          </div>
+          <div class="card">
+            <h3>Status da operação</h3>
+            <p>Quais pedidos aguardam aceite, estão em andamento ou foram concluídos.</p>
+          </div>
+          <div class="card">
+            <h3>Histórico organizado</h3>
+            <p>Base para acompanhar uso, recorrência, picos e oportunidades de melhoria.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Escopo do MVP</div>
+          <h2>O que entra agora e o que fica para depois</h2>
+          <p class="muted">A inteligência do MVP está em lançar o suficiente para funcionar bem, sem carregar custo desnecessário na largada.</p>
+        </div>
+
+        <div class="compare">
+          <div class="box good">
+            <h3>Entra no MVP</h3>
+            <ul class="clean">
+              <li>Mapa na experiência do cliente.</li>
+              <li>Pedido imediato.</li>
+              <li>Agendamento.</li>
+              <li>Distribuição automática para motoristas.</li>
+              <li>Aceite e atualização de status.</li>
+              <li>Painel de acompanhamento do negócio.</li>
+              <li>Histórico básico das solicitações.</li>
+            </ul>
+          </div>
+          <div class="box bad">
+            <h3>Fica para fase posterior</h3>
+            <ul class="clean">
+              <li>Recursos complexos de super app.</li>
+              <li>Lógica muito sofisticada de tarifa dinâmica.</li>
+              <li>Camadas pesadas de customização visual.</li>
+              <li>Funcionalidades avançadas que não são vitais para a operação inicial.</li>
+              <li>Complexidade que não aumenta receita logo no começo.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Vantagem estratégica</div>
+          <h2>Por que este MVP faz sentido para a fase atual do negócio</h2>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3>Baixo risco</h3>
+            <p>Evita investir pesado antes de provar operação, adesão do cliente e comportamento real da demanda.</p>
+          </div>
+          <div class="card">
+            <h3>Velocidade</h3>
+            <p>Permite colocar algo no ar mais rápido, organizar a carteira existente e começar a colher dados reais.</p>
+          </div>
+          <div class="card">
+            <h3>Poder de decisão depois</h3>
+            <p>Com operação rodando, o negócio decide com mais clareza se evolui o próprio produto ou parte para uma solução mais robusta.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="eyebrow">Possível evolução</div>
+          <h2>Como este MVP pode virar um produto maior sem desperdício</h2>
+          <p class="muted">O MVP não é um improviso. Ele é o primeiro degrau do negócio digitalizado.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <h3>Fase 1 — Organizar e automatizar a base atual</h3>
+            <p>Colocar clientes, motoristas e pedidos dentro de um fluxo digital único.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>Fase 2 — Medir uso e operação real</h3>
+            <p>Entender picos, horários, recorrência, cancelamentos e comportamento de agendamento.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>Fase 3 — Refinar experiência e automações</h3>
+            <p>Melhorar o que já provou valor, sem gastar tempo com recursos supérfluos.</p>
+          </div>
+          <div class="timeline-item">
+            <h3>Fase 4 — Escalar com base em evidência</h3>
+            <p>Nessa etapa, a empresa pode evoluir o próprio sistema ou migrar para uma solução mais robusta com muito mais segurança.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="footer-box">
+        <div class="eyebrow">Conclusão executiva</div>
+        <h2>Resumo para apresentação ao sócio</h2>
+        <p style="font-size:18px; margin-bottom:14px;">A proposta não é construir um "Uber completo" desde o dia 1. A proposta é lançar um MVP de baixo custo, com mapa, agendamento e operação 24h apoiada em automação, para profissionalizar o serviço, organizar a carteira já existente e validar a escala do negócio sem investimento desnecessário.</p>
+        <div class="grid-3">
+          <div class="card">
+            <h3>Entrega percepção profissional</h3>
+            <p>Cliente sente que está usando uma plataforma real e organizada.</p>
+          </div>
+          <div class="card">
+            <h3>Atende necessidade prática do negócio</h3>
+            <p>Mapa, pedido imediato, agendamento e fluxo contínuo resolvem o essencial.</p>
+          </div>
+          <div class="card">
+            <h3>Preserva caixa e liberdade estratégica</h3>
+            <p>O negócio cresce primeiro com inteligência e depois com sofisticação.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PÁGINA 2: CLIENTE -->
+    <div id="cliente" class="page-section">
+      <section class="hero">
+        <div class="badge">Área do Cliente</div>
+        <h1>Solicite sua corrida</h1>
+        <p class="sub">Informe origem, destino e tipo de viagem. Motoristas parceiros receberão sua solicitação em segundos.</p>
+      </section>
+
+      <div class="grid-2">
+        <div class="section">
+          <div class="section-head">
+            <div class="eyebrow">Novo pedido</div>
+            <h2>Para onde vamos hoje?</h2>
+          </div>
+
+          <div class="client-form">
+            <div class="form-group">
+              <label>📍 Origem</label>
+              <input type="text" placeholder="Ex: Shopping Vitória, Av. Américo Buaiz, 200" />
+            </div>
+
+            <div class="form-group">
+              <label>📍 Destino</label>
+              <input type="text" placeholder="Ex: Aeroporto de Vitória, Av. Fernando Ferrari, 3800" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>📅 Data</label>
+                <input type="date" />
+              </div>
+              <div class="form-group">
+                <label>⏰ Horário</label>
+                <input type="time" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Tipo de viagem</label>
+              <div class="tipo-viagem">
+                <div class="tipo-card selected" onclick="selectTipo(this)">
+                  <div class="icon">⚡</div>
+                  <strong>Agora</strong>
+                  <div style="font-size:12px; color:var(--muted);">Partida imediata</div>
+                </div>
+                <div class="tipo-card" onclick="selectTipo(this)">
+                  <div class="icon">📅</div>
+                  <strong>Agendar</strong>
+                  <div style="font-size:12px; color:var(--muted);">Programar para depois</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>📝 Observações (opcional)</label>
+              <textarea rows="3" placeholder="Ex: Preciso de ajuda com malas, passageiro com mobilidade reduzida..."></textarea>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f5fff8, #fbfffd); border: 1px solid #cfe9d8; border-radius: 18px; padding: 16px; margin: 10px 0;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:800; font-size:18px;">Estimativa de preço</div>
+                  <div style="font-size:13px; color:var(--muted);">Shopping Vitória → Aeroporto VIX</div>
+                </div>
+                <div style="font-size:28px; font-weight:900; color:var(--accent-2);">R$ 45,00</div>
+              </div>
+              <div style="margin-top:10px; font-size:13px; color:var(--muted);">
+                ⏱️ ~12 min de trajeto • 🛣️ ~8,5 km
+              </div>
+            </div>
+
+            <button class="btn primary" style="width:100%; padding:16px; font-size:16px;" onclick="solicitarCorrida()">
+              🚗 CONFIRMAR SOLICITAÇÃO
+            </button>
+          </div>
         </div>
 
         <div>
-          <div class="card" style="margin-bottom:16px;">
-            <h3>O que essa tela precisa transmitir</h3>
-            <ul class="clean">
-              <li>O cliente consegue se localizar e ver que o sistema realmente usa mapa.</li>
-              <li>O pedido pode ser imediato ou planejado para mais tarde.</li>
-              <li>O processo passa sensação de organização e segurança.</li>
-              <li>A plataforma reduz ligações, mensagens soltas e confusão operacional.</li>
-            </ul>
+          <div class="section" style="margin-bottom:16px;">
+            <div class="section-head">
+              <div class="eyebrow">Status do pedido</div>
+              <h2>Acompanhe sua solicitação</h2>
+            </div>
+            <div id="statusPedido" style="text-align:center; padding:40px 20px; color:var(--muted);">
+              <div style="font-size:48px; margin-bottom:16px;">📋</div>
+              <p>Nenhuma solicitação ativa no momento.</p>
+              <p style="font-size:13px;">Preencha o formulário ao lado para solicitar uma corrida.</p>
+            </div>
           </div>
-          <div class="highlight">
-            <h3>Objetivo empresarial desta experiência</h3>
-            <p>Transformar um serviço que hoje pode depender de atendimento informal em um fluxo padronizado, registrável e escalável, sem precisar construir logo de cara uma operação gigante e cara.</p>
+
+          <div class="section">
+            <div class="section-head">
+              <div class="eyebrow">Últimas corridas</div>
+              <h2>Histórico rápido</h2>
+            </div>
+            <div style="display:grid; gap:12px;">
+              <div style="border:1px solid var(--line); border-radius:16px; padding:14px; background:white;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <strong style="font-size:14px;">Shopping → Aeroporto</strong>
+                  <span style="font-size:12px; color:var(--muted);">Ontem, 14:30</span>
+                </div>
+                <div style="font-size:13px; color:var(--muted);">Motorista: Carlos • ⭐ 4.9</div>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                  <span class="status-badge status-concluida">✓ Concluída</span>
+                  <strong style="color:var(--accent-2);">R$ 42,00</strong>
+                </div>
+              </div>
+              <div style="border:1px solid var(--line); border-radius:16px; padding:14px; background:white;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                  <strong style="font-size:14px;">Centro → Praia da Costa</strong>
+                  <span style="font-size:12px; color:var(--muted);">15/04, 09:15</span>
+                </div>
+                <div style="font-size:13px; color:var(--muted);">Motorista: Ana • ⭐ 4.8</div>
+                <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                  <span class="status-badge status-concluida">✓ Concluída</span>
+                  <strong style="color:var(--accent-2);">R$ 38,50</strong>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Fluxo principal</div>
-        <h2>Como funciona o pedido imediato com lógica mais próxima do padrão Uber</h2>
-        <p class="muted">Este fluxo foi desenhado para reduzir fricção para o cliente, indicar o motorista mais próximo de forma inteligente e minimizar dependência de um operador humano permanente.</p>
-      </div>
+    <!-- PÁGINA 3: MOTORISTA -->
+    <div id="motorista" class="page-section">
+      <section class="hero">
+        <div class="badge">Área do Motorista</div>
+        <h1>Corridas disponíveis</h1>
+        <p class="sub">Aceite solicitações próximas à sua localização. Quanto maior sua avaliação, mais prioridade no recebimento de chamados.</p>
+      </section>
 
-      <div class="flow">
-        <div class="step">
-          <div class="num">1</div>
-          <h3>Cliente solicita</h3>
-          <p>Origem, destino e tipo de atendimento são enviados pela plataforma.</p>
-        </div>
-        <div class="step">
-          <div class="num">2</div>
-          <h3>Sistema recebe</h3>
-          <p>O pedido entra automaticamente no fluxo e já fica pronto para distribuição.</p>
-        </div>
-        <div class="step">
-          <div class="num">3</div>
-          <h3>Motoristas são acionados</h3>
-          <p>Quem estiver disponível recebe o chamado no celular.</p>
-        </div>
-        <div class="step">
-          <div class="num">4</div>
-          <h3>Primeiro aceite confirma</h3>
-          <p>Assim que um motorista aceita, o sistema bloqueia a corrida para os demais.</p>
-        </div>
-        <div class="step">
-          <div class="num">5</div>
-          <h3>Status em tempo real</h3>
-          <p>Cliente acompanha andamento e o negócio mantém histórico organizado.</p>
-        </div>
-      </div>
-    </section>
+      <div class="grid-2">
+        <div class="section">
+          <div class="section-head">
+            <div class="eyebrow">Novas solicitações</div>
+            <h2>Próximas de você</h2>
+          </div>
+          
+          <div class="corridas-lista">
+            <div class="corrida-card">
+              <div class="corrida-info">
+                <h4>Shopping Vitória → Aeroporto VIX</h4>
+                <div class="corrida-meta">
+                  <span>📍 2,3 km de distância</span>
+                  <span>⏱️ Agora</span>
+                  <span>👤 Maria S.</span>
+                  <span>⭐ 4.8</span>
+                </div>
+                <div style="margin-top:8px; font-size:13px; color:var(--muted);">
+                  💳 Pagamento: Dinheiro • 📝 Sem observações
+                </div>
+              </div>
+              <div class="corrida-acoes">
+                <div class="corrida-valor">R$ 45,00</div>
+                <button class="btn success" style="padding:10px 20px;" onclick="aceitarCorrida(this)">✓ ACEITAR</button>
+                <button class="btn" style="padding:10px 20px; font-size:12px;" onclick="recusarCorrida(this)">✗ Recusar</button>
+              </div>
+            </div>
 
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Agendamento</div>
-        <h2>Como funciona o agendamento, que é uma das peças mais valiosas do MVP</h2>
-        <p class="muted">Agendamento aumenta previsibilidade, reduz atrito operacional e fortalece recorrência com a base já existente de clientes.</p>
-      </div>
+            <div class="corrida-card">
+              <div class="corrida-info">
+                <h4>Centro → Praia da Costa</h4>
+                <div class="corrida-meta">
+                  <span>📍 1,8 km de distância</span>
+                  <span>⏱️ Agora</span>
+                  <span>👤 João P.</span>
+                  <span>⭐ 4.9</span>
+                </div>
+                <div style="margin-top:8px; font-size:13px; color:var(--muted);">
+                  💳 Pagamento: PIX • 📝 "Porta malas para surfboard"
+                </div>
+              </div>
+              <div class="corrida-acoes">
+                <div class="corrida-valor">R$ 38,00</div>
+                <button class="btn success" style="padding:10px 20px;" onclick="aceitarCorrida(this)">✓ ACEITAR</button>
+                <button class="btn" style="padding:10px 20px; font-size:12px;" onclick="recusarCorrida(this)">✗ Recusar</button>
+              </div>
+            </div>
 
-      <div class="timeline">
-        <div class="timeline-item">
-          <h3>1. Cliente escolhe o dia e o horário</h3>
-          <p>O pedido fica registrado com antecedência, sem depender de ligação, anotação manual ou confirmação por mensagem solta.</p>
+            <div class="corrida-card">
+              <div class="corrida-info">
+                <h4>UFES → Shopping Vitória</h4>
+                <div class="corrida-meta">
+                  <span>📍 4,1 km de distância</span>
+                  <span>📅 Amanhã, 08:00</span>
+                  <span>👤 Prof. Ricardo</span>
+                  <span>⭐ 5.0</span>
+                </div>
+                <div style="margin-top:8px; font-size:13px; color:var(--muted);">
+                  💳 Pagamento: Cartão • 📝 Agendamento antecipado
+                </div>
+              </div>
+              <div class="corrida-acoes">
+                <div class="corrida-valor">R$ 32,00</div>
+                <button class="btn success" style="padding:10px 20px;" onclick="aceitarCorrida(this)">✓ ACEITAR</button>
+                <button class="btn" style="padding:10px 20px; font-size:12px;" onclick="recusarCorrida(this)">✗ Recusar</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="timeline-item">
-          <h3>2. A solicitação entra como reserva programada</h3>
-          <p>O sistema separa pedidos imediatos de pedidos futuros, mantendo organização e previsibilidade do volume esperado.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>3. Antes do horário, o sistema ativa o fluxo automático</h3>
-          <p>Com antecedência definida, o atendimento é disparado para motoristas aptos a aceitar o compromisso.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>4. O motorista confirma a reserva</h3>
-          <p>O cliente passa a ter um atendimento muito mais previsível e com menor risco de improviso de última hora.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>5. No horário, a corrida já entra pronta para execução</h3>
-          <p>Isso melhora experiência do cliente e reduz falhas em horários críticos, inclusive fora do expediente comercial.</p>
-        </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Operação contínua</div>
-        <h2>Como o MVP pode funcionar 24 horas sem depender de operador fixo</h2>
-        <p class="muted">O ponto central desta proposta é: o sistema trabalha sozinho na maior parte do tempo. A equipe humana entra como exceção e não como regra.</p>
-      </div>
+        <div>
+          <div class="section" style="margin-bottom:16px;">
+            <div class="section-head">
+              <div class="eyebrow">Minha situação</div>
+              <h2>Status operacional</h2>
+            </div>
+            <div style="text-align:center; padding:20px;">
+              <div style="width:80px; height:80px; border-radius:50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:36px; color:white; box-shadow: 0 8px 24px rgba(34,197,94,0.3);">
+                🚗
+              </div>
+              <h3 style="margin-bottom:6px;">Você está ONLINE</h3>
+              <p style="color:var(--muted); font-size:14px;">Recebendo solicitações da região</p>
+              <div style="margin-top:16px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <div style="background:#f8fafc; border:1px solid var(--line); border-radius:16px; padding:14px;">
+                  <div style="font-size:24px; font-weight:900; color:var(--accent-2);">12</div>
+                  <div style="font-size:12px; color:var(--muted);">Corridas hoje</div>
+                </div>
+                <div style="background:#f8fafc; border:1px solid var(--line); border-radius:16px; padding:14px;">
+                  <div style="font-size:24px; font-weight:900; color:var(--accent-2);">R$ 340</div>
+                  <div style="font-size:12px; color:var(--muted);">Ganhos hoje</div>
+                </div>
+              </div>
+              <button class="btn danger" style="width:100%; margin-top:16px;" onclick="toggleOnline(this)">
+                🔴 FICAR OFFLINE
+              </button>
+            </div>
+          </div>
 
-      <div class="grid-3">
-        <div class="card">
-          <h3>Automação por padrão</h3>
-          <p>Pedidos entram, são distribuídos, recebem aceite e atualizam status sem exigir intervenção constante da equipe.</p>
-        </div>
-        <div class="card">
-          <h3>Fallback inteligente</h3>
-          <p>Se ninguém aceitar no primeiro disparo, o sistema reenvia, amplia alcance ou aciona uma contingência previamente definida.</p>
-        </div>
-        <div class="card">
-          <h3>Supervisão e não microgestão</h3>
-          <p>O empresário acompanha a operação em painel, mas não precisa viver apagando incêndio em cada solicitação.</p>
-        </div>
-      </div>
-
-      <div class="highlight" style="margin-top:16px;">
-        <h3>Mensagem importante para o sócio</h3>
-        <p>Não estamos propondo um modelo artesanal, dependente de alguém no telefone 24h. Estamos propondo um MVP com automação suficiente para rodar continuamente, preservando baixo custo e permitindo crescimento controlado.</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Reputação</div>
-        <h2>Reputação obrigatória no MVP: motorista e passageiro</h2>
-        <p class="muted">Como a operação será 24h e mais automática, a reputação não é luxo. Ela é peça de segurança e de qualidade da operação. O sistema passa a priorizar quem atende bem e protege os melhores usuários e motoristas.</p>
-      </div>
-
-      <div class="reputation-cards">
-        <div class="rep-card">
-          <div class="pill">Motorista</div>
-          <div class="score">4,9</div>
-          <p class="muted">A nota do motorista influencia prioridade de distribuição, confiança do passageiro e manutenção da qualidade da operação.</p>
-          <div class="meter"><span style="width:92%;"></span></div>
-          <ul class="clean">
-            <li>Nota média das viagens</li>
-            <li>Taxa de aceitação</li>
-            <li>Taxa de cancelamento</li>
-            <li>Histórico de corridas concluídas</li>
-          </ul>
-        </div>
-        <div class="rep-card">
-          <div class="pill">Passageiro</div>
-          <div class="score">4,8</div>
-          <p class="muted">A nota do passageiro ajuda a evitar no-show, cancelamentos abusivos e comportamento problemático, protegendo a rede de motoristas.</p>
-          <div class="meter"><span style="width:88%;"></span></div>
-          <ul class="clean">
-            <li>Nota recebida dos motoristas</li>
-            <li>Histórico de cancelamentos</li>
-            <li>Pontualidade e presença</li>
-            <li>Confiabilidade no uso da plataforma</li>
-          </ul>
+          <div class="section">
+            <div class="section-head">
+              <div class="eyebrow">Em andamento</div>
+              <h2>Corrida atual</h2>
+            </div>
+            <div id="corridaAtual" style="text-align:center; padding:30px 20px; color:var(--muted);">
+              <div style="font-size:48px; margin-bottom:16px;">🛣️</div>
+              <p>Sem corrida em andamento.</p>
+              <p style="font-size:13px;">Aceite uma solicitação para começar.</p>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Motorista</div>
-        <h2>O que o motorista enxerga e por que isso importa</h2>
-        <p class="muted">O lado do motorista precisa ser muito direto: receber, entender, aceitar e executar. Quanto mais simples for, maior a chance de adesão operacional.</p>
+    <!-- PÁGINA 4: PAINEL ADMIN -->
+    <div id="painel" class="page-section">
+      <section class="hero">
+        <div class="badge">Painel Administrativo</div>
+        <h1>Operação em tempo real</h1>
+        <p class="sub">Acompanhe pedidos, motoristas e métricas da operação. Visão unificada para gestão e tomada de decisão.</p>
+      </section>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-number" id="statPendentes">3</div>
+          <div class="stat-label">Pendentes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statAndamento">1</div>
+          <div class="stat-label">Em andamento</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statConcluidas">28</div>
+          <div class="stat-label">Hoje</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statFaturamento">R$ 1.240</div>
+          <div class="stat-label">Faturamento</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="eyebrow">Pedidos ativos</div>
+          <h2>Todas as solicitações em tempo real</h2>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="pedidos-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Origem → Destino</th>
+                <th>Motorista</th>
+                <th>Horário</th>
+                <th>Valor</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaPedidos">
+              <tr>
+                <td>#0420</td>
+                <td>Maria S.</td>
+                <td>Shopping Vitória → Aeroporto VIX</td>
+                <td>Aguardando...</td>
+                <td>Agora</td>
+                <td>R$ 45,00</td>
+                <td><span class="status-badge status-pendente">⏳ Pendente</span></td>
+              </tr>
+              <tr>
+                <td>#0419</td>
+                <td>João P.</td>
+                <td>Centro → Praia da Costa</td>
+                <td>Aguardando...</td>
+                <td>Agora</td>
+                <td>R$ 38,00</td>
+                <td><span class="status-badge status-pendente">⏳ Pendente</span></td>
+              </tr>
+              <tr>
+                <td>#0418</td>
+                <td>Prof. Ricardo</td>
+                <td>UFES → Shopping Vitória</td>
+                <td>Aguardando...</td>
+                <td>Amanhã, 08:00</td>
+                <td>R$ 32,00</td>
+                <td><span class="status-badge status-pendente">📅 Agendado</span></td>
+              </tr>
+              <tr>
+                <td>#0417</td>
+                <td>Ana L.</td>
+                <td>Aeroporto → Centro</td>
+                <td>Carlos M.</td>
+                <td>10:45</td>
+                <td>R$ 40,00</td>
+                <td><span class="status-badge status-andamento">🚗 Em andamento</span></td>
+              </tr>
+              <tr>
+                <td>#0416</td>
+                <td>Pedro K.</td>
+                <td>Praia da Costa → Shopping</td>
+                <td>Ana B.</td>
+                <td>09:30</td>
+                <td>R$ 35,00</td>
+                <td><span class="status-badge status-concluida">✓ Concluída</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="grid-2">
-        <div class="card">
-          <h3>Fluxo do motorista</h3>
-          <ul class="clean">
-            <li>Recebe nova solicitação no celular.</li>
-            <li>Visualiza rapidamente origem, destino e horário.</li>
-            <li>Aceita o atendimento com um toque.</li>
-            <li>Atualiza status conforme avança.</li>
-            <li>Conclui a corrida com registro do atendimento.</li>
-          </ul>
+        <div class="section">
+          <div class="section-head">
+            <div class="eyebrow">Motoristas</div>
+            <h2>Status da frota</h2>
+          </div>
+          <div style="display:grid; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px; padding:14px; background:white; border:1px solid var(--line); border-radius:16px;">
+              <div class="avatar" style="background: linear-gradient(135deg, #22c55e, #16a34a);"></div>
+              <div style="flex:1;">
+                <strong>Carlos M.</strong>
+                <div style="font-size:13px; color:var(--muted);">⭐ 4.9 • 1248 viagens</div>
+              </div>
+              <span class="status-badge status-andamento">🟢 Online</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:14px; background:white; border:1px solid var(--line); border-radius:16px;">
+              <div class="avatar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"></div>
+              <div style="flex:1;">
+                <strong>Ana B.</strong>
+                <div style="font-size:13px; color:var(--muted);">⭐ 4.8 • 856 viagens</div>
+              </div>
+              <span class="status-badge status-andamento">🟢 Online</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px; padding:14px; background:white; border:1px solid var(--line); border-radius:16px;">
+              <div class="avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);"></div>
+              <div style="flex:1;">
+                <strong>Roberto S.</strong>
+                <div style="font-size:13px; color:var(--muted);">⭐ 4.7 • 432 viagens</div>
+              </div>
+              <span class="status-badge" style="background:#e5e7eb; color:#6b7280;">⚪ Offline</span>
+            </div>
+          </div>
         </div>
-        <div class="card">
-          <h3>Benefício empresarial</h3>
-          <ul class="clean">
-            <li>Menos ruído operacional.</li>
-            <li>Menos retrabalho da central.</li>
-            <li>Menos dependência de ligação e WhatsApp manual.</li>
-            <li>Mais padronização da operação.</li>
-            <li>Mais capacidade de atender maior volume no futuro.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
 
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Controle gerencial</div>
-        <h2>O que o empresário ganha no painel de gestão</h2>
-        <p class="muted">Sem entrar em infraestrutura técnica, o foco do painel é dar visibilidade e controle de operação.</p>
+        <div class="section">
+          <div class="section-head">
+            <div class="eyebrow">Agendamentos</div>
+            <h2>Próximas reservas</h2>
+          </div>
+          <div style="display:grid; gap:12px;">
+            <div style="border:1px solid var(--line); border-radius:16px; padding:16px; background:white;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <strong>UFES → Shopping Vitória</strong>
+                <span style="font-size:12px; color:var(--muted);">Amanhã, 08:00</span>
+              </div>
+              <div style="font-size:13px; color:var(--muted);">Prof. Ricardo • R$ 32,00</div>
+              <div style="margin-top:10px;">
+                <span class="status-badge status-pendente">📅 Aguardando motorista</span>
+              </div>
+            </div>
+            <div style="border:1px solid var(--line); border-radius:16px; padding:16px; background:white;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <strong>Centro → Aeroporto</strong>
+                <span style="font-size:12px; color:var(--muted);">22/04, 14:00</span>
+              </div>
+              <div style="font-size:13px; color:var(--muted);">Fernanda L. • R$ 45,00</div>
+              <div style="margin-top:10px;">
+                <span class="status-badge status-pendente">📅 Aguardando motorista</span>
+              </div>
+            </div>
+            <div style="border:1px solid var(--line); border-radius:16px; padding:16px; background:white;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <strong>Praia da Costa → Centro</strong>
+                <span style="font-size:12px; color:var(--muted);">22/04, 18:30</span>
+              </div>
+              <div style="font-size:13px; color:var(--muted);">Lucas M. • R$ 28,00</div>
+              <div style="margin-top:10px;">
+                <span class="status-badge status-pendente">📅 Aguardando motorista</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="grid-4">
-        <div class="card">
-          <h3>Pedidos do momento</h3>
-          <p>Visualização do que está entrando agora e do que já está em atendimento.</p>
-        </div>
-        <div class="card">
-          <h3>Agendamentos futuros</h3>
-          <p>Visão antecipada da agenda do dia e dos próximos períodos.</p>
-        </div>
-        <div class="card">
-          <h3>Status da operação</h3>
-          <p>Quais pedidos aguardam aceite, estão em andamento ou foram concluídos.</p>
-        </div>
-        <div class="card">
-          <h3>Histórico organizado</h3>
-          <p>Base para acompanhar uso, recorrência, picos e oportunidades de melhoria.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Escopo do MVP</div>
-        <h2>O que entra agora e o que fica para depois</h2>
-        <p class="muted">A inteligência do MVP está em lançar o suficiente para funcionar bem, sem carregar custo desnecessário na largada.</p>
-      </div>
-
-      <div class="compare">
-        <div class="box good">
-          <h3>Entra no MVP</h3>
-          <ul class="clean">
-            <li>Mapa na experiência do cliente.</li>
-            <li>Pedido imediato.</li>
-            <li>Agendamento.</li>
-            <li>Distribuição automática para motoristas.</li>
-            <li>Aceite e atualização de status.</li>
-            <li>Painel de acompanhamento do negócio.</li>
-            <li>Histórico básico das solicitações.</li>
-          </ul>
-        </div>
-        <div class="box bad">
-          <h3>Fica para fase posterior</h3>
-          <ul class="clean">
-            <li>Recursos complexos de super app.</li>
-            <li>Lógica muito sofisticada de tarifa dinâmica.</li>
-            <li>Camadas pesadas de customização visual.</li>
-            <li>Funcionalidades avançadas que não são vitais para a operação inicial.</li>
-            <li>Complexidade que não aumenta receita logo no começo.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Vantagem estratégica</div>
-        <h2>Por que este MVP faz sentido para a fase atual do negócio</h2>
-      </div>
-
-      <div class="grid-3">
-        <div class="card">
-          <h3>Baixo risco</h3>
-          <p>Evita investir pesado antes de provar operação, adesão do cliente e comportamento real da demanda.</p>
-        </div>
-        <div class="card">
-          <h3>Velocidade</h3>
-          <p>Permite colocar algo no ar mais rápido, organizar a carteira existente e começar a colher dados reais.</p>
-        </div>
-        <div class="card">
-          <h3>Poder de decisão depois</h3>
-          <p>Com operação rodando, o negócio decide com mais clareza se evolui o próprio produto ou parte para uma solução mais robusta.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="section-head">
-        <div class="eyebrow">Possível evolução</div>
-        <h2>Como este MVP pode virar um produto maior sem desperdício</h2>
-        <p class="muted">O MVP não é um improviso. Ele é o primeiro degrau do negócio digitalizado.</p>
-      </div>
-
-      <div class="timeline">
-        <div class="timeline-item">
-          <h3>Fase 1 — Organizar e automatizar a base atual</h3>
-          <p>Colocar clientes, motoristas e pedidos dentro de um fluxo digital único.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>Fase 2 — Medir uso e operação real</h3>
-          <p>Entender picos, horários, recorrência, cancelamentos e comportamento de agendamento.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>Fase 3 — Refinar experiência e automações</h3>
-          <p>Melhorar o que já provou valor, sem gastar tempo com recursos supérfluos.</p>
-        </div>
-        <div class="timeline-item">
-          <h3>Fase 4 — Escalar com base em evidência</h3>
-          <p>Nessa etapa, a empresa pode evoluir o próprio sistema ou migrar para uma solução mais robusta com muito mais segurança.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="footer-box">
-      <div class="eyebrow">Conclusão executiva</div>
-      <h2>Resumo para apresentação ao sócio</h2>
-      <p style="font-size:18px; margin-bottom:14px;">A proposta não é construir um "Uber completo" desde o dia 1. A proposta é lançar um MVP de baixo custo, com mapa, agendamento e operação 24h apoiada em automação, para profissionalizar o serviço, organizar a carteira já existente e validar a escala do negócio sem investimento desnecessário.</p>
-      <div class="grid-3">
-        <div class="card">
-          <h3>Entrega percepção profissional</h3>
-          <p>Cliente sente que está usando uma plataforma real e organizada.</p>
-        </div>
-        <div class="card">
-          <h3>Atende necessidade prática do negócio</h3>
-          <p>Mapa, pedido imediato, agendamento e fluxo contínuo resolvem o essencial.</p>
-        </div>
-        <div class="card">
-          <h3>Preserva caixa e liberdade estratégica</h3>
-          <p>O negócio cresce primeiro com inteligência e depois com sofisticação.</p>
-        </div>
-      </div>
-    </section>
   </div>
+
+  <script>
+    // Navegação entre páginas
+    function showPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // Cliente: selecionar tipo de viagem
+    function selectTipo(element) {
+      document.querySelectorAll('.tipo-card').forEach(el => el.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    // Cliente: solicitar corrida
+    function solicitarCorrida() {
+      const statusDiv = document.getElementById('statusPedido');
+      statusDiv.innerHTML = `
+        <div style="animation: fadeIn 0.5s;">
+          <div style="font-size:48px; margin-bottom:16px;">🔍</div>
+          <h3 style="margin-bottom:8px;">Buscando motorista...</h3>
+          <p style="color:var(--muted);">Sua solicitação foi enviada para os motoristas próximos.</p>
+          <div style="margin-top:16px; padding:12px; background:#f8fafc; border-radius:12px; font-size:13px;">
+            <div>📍 Shopping Vitória → Aeroporto VIX</div>
+            <div style="margin-top:4px; color:var(--muted);">💰 R$ 45,00 • ⏱️ Agora</div>
+          </div>
+        </div>
+      `;
+      
+      // Simular aceite após 3 segundos
+      setTimeout(() => {
+        statusDiv.innerHTML = `
+          <div style="animation: fadeIn 0.5s;">
+            <div style="font-size:48px; margin-bottom:16px;">🚗</div>
+            <h3 style="margin-bottom:8px;">Motorista a caminho!</h3>
+            <p style="color:var(--muted);">Carlos M. • ⭐ 4.9 • Toyota Corolla Prata</p>
+            <div style="margin-top:16px; padding:12px; background:#ecfdf3; border-radius:12px; font-size:13px; color:var(--accent-2);">
+              <strong>Chega em aproximadamente 7 minutos</strong>
+            </div>
+          </div>
+        `;
+      }, 3000);
+    }
+
+    // Motorista: aceitar corrida
+    function aceitarCorrida(btn) {
+      const card = btn.closest('.corrida-card');
+      card.style.opacity = '0.5';
+      card.style.pointerEvents = 'none';
+      
+      const atualDiv = document.getElementById('corridaAtual');
+      atualDiv.innerHTML = `
+        <div style="animation: fadeIn 0.5s;">
+          <div style="font-size:48px; margin-bottom:16px;">🛣️</div>
+          <h3 style="margin-bottom:8px;">Corrida em andamento</h3>
+          <p style="color:var(--muted);">Shopping Vitória → Aeroporto VIX</p>
+          <div style="margin-top:16px; display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <button class="btn" onclick="finalizarCorrida()">✓ Finalizar</button>
+            <button class="btn danger" onclick="cancelarCorrida()">✗ Cancelar</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Motorista: recusar corrida
+    function recusarCorrida(btn) {
+      const card = btn.closest('.corrida-card');
+      card.style.display = 'none';
+    }
+
+    // Motorista: finalizar corrida
+    function finalizarCorrida() {
+      document.getElementById('corridaAtual').innerHTML = `
+        <div style="animation: fadeIn 0.5s; text-align:center; padding:30px 20px; color:var(--muted);">
+          <div style="font-size:48px; margin-bottom:16px;">✅</div>
+          <h3 style="margin-bottom:8px;">Corrida finalizada!</h3>
+          <p>R$ 45,00 creditados na sua conta.</p>
+        </div>
+      `;
+    }
+
+    // Motorista: cancelar corrida
+    function cancelarCorrida() {
+      document.getElementById('corridaAtual').innerHTML = `
+        <div style="text-align:center; padding:30px 20px; color:var(--muted);">
+          <div style="font-size:48px; margin-bottom:16px;">🛣️</div>
+          <p>Sem corrida em andamento.</p>
+          <p style="font-size:13px;">Aceite uma solicitação para começar.</p>
+        </div>
+      `;
+    }
+
+    // Motorista: toggle online/offline
+    function toggleOnline(btn) {
+      if (btn.textContent.includes('OFFLINE')) {
+        btn.textContent = '🟢 FICAR ONLINE';
+        btn.classList.remove('danger');
+        btn.classList.add('success');
+      } else {
+        btn.textContent = '🔴 FICAR OFFLINE';
+        btn.classList.remove('success');
+        btn.classList.add('danger');
+      }
+    }
+
+    // Animação CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
 </body>
 </html>
